@@ -17,7 +17,7 @@ RUN npm install && npx prisma generate
 
 # 3. Runtime image
 FROM node:20-alpine
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates openssl
 WORKDIR /app
 COPY --from=backend-deps /app/backend/node_modules ./backend/node_modules
 COPY backend/ ./backend/
