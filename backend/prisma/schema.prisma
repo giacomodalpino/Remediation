@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model RemediationRun {
+  id             String   @id @default(cuid())
+  startedAt      DateTime @default(now())
+  completedAt    DateTime?
+  findingsCount  Int      @default(0)
+  tasksCreated   Int      @default(0)
+  tasksCompleted Int      @default(0)
+  tasksFailed    Int      @default(0)
+  tasks          RemediationTask[]
+}
+
+model RemediationTask {
+  id              String   @id @default(cuid())
+  runId           String
+  run             RemediationRun @relation(fields: [runId], references: [id])
+  title           String
+  packageName     String
+  severity        String
+  status          String
+  devinSessionId  String?
+  devinSessionUrl String?
+  prUrl           String?
+  failureReason   String?
+  findingJson     String?
+  issueNumber     Int?
+  issueUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  completedAt     DateTime?
+  events          ActivityEvent[]
+}
+
+model Settings {
+  id              Int      @id @default(1)
+  targetRepoUrl   String?
+  devinApiKey     String?
+  githubToken     String?
+  updatedAt       DateTime @updatedAt
+}
+
+model ActivityEvent {
+  id        String   @id @default(cuid())
+  type      String
+  message   String
+  taskId    String?
+  task      RemediationTask? @relation(fields: [taskId], references: [id])
+  createdAt DateTime @default(now())
+}

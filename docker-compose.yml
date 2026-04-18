@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    image: devin-remediation:latest
+    container_name: devin-remediation
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: file:../data/app.db
+      PORT: 4000
+    volumes:
+      - ./data:/app/backend/data
+    restart: unless-stopped
